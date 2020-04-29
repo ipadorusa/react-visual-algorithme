@@ -4,11 +4,7 @@ import { useState, SetStateAction, FC } from 'react'
 const SIZE = 10;
 const HSIZE = 500;
 const getArr = () => shuffle(range(1,30))
-const swap = (arr: number[], a: number, b: number) => {
-  const tmp = arr[a]
-  arr[a] = arr[b]
-  arr[b] = tmp
-}
+
 const delaySetArr = (arr: number[], setArr: (value: SetStateAction<number[]>) => void) => {
   return new Promise((resolve) => {
     setArr([...arr])
@@ -16,16 +12,20 @@ const delaySetArr = (arr: number[], setArr: (value: SetStateAction<number[]>) =>
   })
 }
 const sort = async (arr: number[], setArr: (value: SetStateAction<number[]>) => void) => {
-  let i = 1;
-  while (i < arr.length) {
-    let j = i;
-    while(j > 0 && arr[j-1] > arr[j]) {
-      swap(arr, j, j -1)
-      await delaySetArr(arr, setArr)
-      j = j - 1
+  let length = arr.length;
+  let i, j, temp;
+  for (i = 0; i < length - 1; i++) {
+    for (j = 0; j < length - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {        
+        temp = arr[j];
+        arr[j] = arr[j + 1];
+        await delaySetArr(arr, setArr);
+        arr[j + 1] = temp;
+      }
     }
-    i = i + 1
   }
+  return arr;
+
 }
 
 export default () => {
@@ -58,7 +58,7 @@ export default () => {
 	return (
 		<div>
 			
-      <h3 className="sub_title">InsertionSort</h3>
+      <h3 className="sub_title">Bubble Sort</h3>
 			<div className="board">
         {arr.map((value, i) => <Bar key={i} value={value} idx={i} />)}
 			</div>
